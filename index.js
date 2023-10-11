@@ -9,6 +9,8 @@ const fs = require('fs');
 const path = require('path');
 const { pipeline } = require('stream');
 
+app.use(express.static(path.join(__dirname,'download')));
+
 const config = {
     channelAccessToken: process.env.token,
     channelSecret: process.env.secretcode
@@ -24,35 +26,84 @@ app.post('/webhook', line.middleware(config), (req, res) => {
 
 const client = new line.Client(config);
 
-
 async function handleEvents(event) {
 
-    if (event.message.type == 'image') {
+    if (event.type === 'postback') {
 
-        if (event.message.contentProvider.type === 'line') {
-            const dlpath = path.join(__dirname, 'download', `${event.message.id}.jpg`)
-
-            await downloadcontent(event.message.id, dlpath);
-
+        if (event.postback.data == 'M') {
             return client.replyMessage(event.replyToken, [
                 {
                     "type": "text",
-                    "text": `Download เรียบร้อย`,
-                    "quoteToken": event.message.quoteToken
+                    "text": `Choose Man`,
                 }
-            ])
+            ]);
+        } else {
+            return client.replyMessage(event.replyToken, [
+                {
+                    "type": "text",
+                    "text": `Choose Woman`,
+                }
+            ]);
 
         }
 
+
     } else {
 
-        return client.replyMessage(event.replyToken, [
-            {
-                "type": "text",
-                "text": `รับข้อมูลเรียบร้อย`,
-                "quoteToken": event.message.quoteToken
+        if (event.message.type == 'image') {
+
+            if (event.message.contentProvider.type === 'line') {
+                const dlpath = path.join(__dirname, 'download', `${event.message.id}.jpg`)
+
+                await downloadcontent(event.message.id, dlpath);
+
+                return client.replyMessage(event.replyToken, [
+                    {
+                        "type": "text",
+                        "text": `Download เรียบร้อย`,
+                        "quoteToken": event.message.quoteToken
+                    }
+                ])
+
             }
-        ])
+
+        } else {
+
+        
+            return client.replyMessage(event.replyToken, [
+                {
+                    "type": "text",
+                    "text": `ท่านเป็นเพศใด กรุณาเลือกด้านล่าง`,
+                    "quickReply": {
+                        "items": [
+                            {
+                                "type": "action",
+                                "action": {
+                                    "type": "postback",
+                                    "data": "M",
+                                    "label": "ชาย",
+                                }
+                            },
+                            {
+                                "type": "action",
+                                "action": {
+                                    "type": "postback",
+                                    "data": "W",
+                                    "label": "หญิง",
+                                }
+                            },
+                            {
+                                "type": "action",
+                                "action": {
+                                    "type": "camera",
+                                    "label": "เปิดกล้อง",
+                                }
+                            }
+                        ]
+                    }
+                }
+            ])
+        }
     }
 
     
