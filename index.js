@@ -69,39 +69,58 @@ async function handleEvents(event) {
 
         } else {
 
-        
             return client.replyMessage(event.replyToken, [
                 {
-                    "type": "text",
-                    "text": `ท่านเป็นเพศใด กรุณาเลือกด้านล่าง`,
-                    "quickReply": {
-                        "items": [
-                            {
-                                "type": "action",
-                                "action": {
-                                    "type": "postback",
-                                    "data": "M",
-                                    "label": "ชาย",
-                                }
-                            },
-                            {
-                                "type": "action",
-                                "action": {
-                                    "type": "postback",
-                                    "data": "W",
-                                    "label": "หญิง",
-                                }
-                            },
-                            {
-                                "type": "action",
-                                "action": {
-                                    "type": "camera",
-                                    "label": "เปิดกล้อง",
-                                }
-                            }
-                        ]
-                    }
-                }
+                    "type": "imagemap",
+                    "baseUrl": "https://2323-2403-6200-88a0-a6c6-30af-e42d-eacb-4d5e.ngrok-free.app/476521096787526059.jpg?version=",
+                    "altText": "ข้อความที่ต้องการให้แสดงหน้า LINE",
+                    "baseSize": {
+                      "width": 1040,
+                      "height": 1040
+                    },
+                    "actions": [
+                      {
+                        "type": "message",
+                        "area": {
+                          "x": 0,
+                          "y": 0,
+                          "width": 469,
+                          "height": 434
+                        },
+                        "text": "Click SCB"
+                      },
+                      {
+                        "type": "message",
+                        "area": {
+                          "x": 494,
+                          "y": 0,
+                          "width": 546,
+                          "height": 453
+                        },
+                        "text": "Click cardX"
+                      },
+                      {
+                        "type": "message",
+                        "area": {
+                          "x": 3,
+                          "y": 457,
+                          "width": 1037,
+                          "height": 288
+                        },
+                        "text": "คลิกตรงกลาง"
+                      },
+                      {
+                        "type": "uri",
+                        "area": {
+                          "x": 0,
+                          "y": 760,
+                          "width": 1040,
+                          "height": 280
+                        },
+                        "linkUri": "https://www.google.com"
+                      }
+                    ]
+                  }
             ])
         }
     }
