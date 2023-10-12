@@ -9,12 +9,16 @@ const fs = require('fs');
 const path = require('path');
 const { pipeline } = require('stream');
 
+const Tesseract = require('tesseract.js')
+
 app.use(express.static(path.join(__dirname,'download')));
 
 const config = {
     channelAccessToken: process.env.token,
     channelSecret: process.env.secretcode
 }
+
+
 
 app.post('/webhook', line.middleware(config), (req, res) => {
     Promise
@@ -57,13 +61,24 @@ async function handleEvents(event) {
 
                 await downloadcontent(event.message.id, dlpath);
 
-                return client.replyMessage(event.replyToken, [
-                    {
-                        "type": "text",
-                        "text": `Download เรียบร้อย`,
-                        "quoteToken": event.message.quoteToken
-                    }
-                ])
+                const imagePath = `download/${event.message.id}.jpg`;
+                Tesseract.recognize(imagePath, 'tha+eng')
+                    .then( ( { data: { text }}) => {
+                        //console.log(text);
+                        //let thai = text.match(/[ก-๛a-zA-Z ]+/g);
+                        let number = text.match(/[0-9]+/g)
+                        //console.log(number);
+
+                        return client.replyMessage(event.replyToken, [
+                            {
+                                "type": "text",
+                                "text": `${number}`
+                            }
+                        ])
+                    })
+                
+
+                
 
             }
 
@@ -145,5 +160,7 @@ async function downloadcontent(mid, downloadpath) {
 app.get('/', (req, res) => {
     res.send('ok');
 })
+
+
 
 app.listen(8080, () => console.log('start server on port 8080'));
