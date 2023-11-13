@@ -14,8 +14,10 @@ const Tesseract = require('tesseract.js')
 app.use(express.static(path.join(__dirname,'download')));
 
 const config = {
-    channelAccessToken: process.env.token,
-    channelSecret: process.env.secretcode
+    //channelAccessToken: process.env.token,
+    //channelSecret: process.env.secretcode
+    channelAccessToken: '7U1uGUB/fyBkriDNI+MUulXpr6UDaJoXnRtPDivaf9FnMFfYsUyy7jW0WjAr1bsHjv11gqm+LCQciymwAm7nlMc7Em4STCb/Q8U7hVkr2eYitWAW4VD/3XK8hCG2YWgSmXHPvnRRkJx1mLRw6lpcqWbZkCQsS1A9FX3FSRp/ceE=',
+    channelSecret: '01dd1cdedeab491a09205486f0160769'
 }
 
 
@@ -32,7 +34,23 @@ const client = new line.Client(config);
 
 async function handleEvents(event) {
 
-    if (event.type === 'postback') {
+    console.log(event.type);
+
+    if (event.type == 'message') {
+      console.log(event.message.text)
+      if (event.message.text == 'getid2') {
+        return client.replyMessage(event.replyToken, [
+          {
+              "type": "text",
+              "text": `HI YOUUU`,
+          }
+      ]);
+
+      }
+    }
+
+    
+    /*if (event.type === 'postback') {
 
         if (event.postback.data == 'M') {
             return client.replyMessage(event.replyToken, [
@@ -139,6 +157,7 @@ async function handleEvents(event) {
             ])
         }
     }
+    */
 
     
 
@@ -163,4 +182,4 @@ app.get('/', (req, res) => {
 
 
 
-app.listen(8080, () => console.log('start server on port 8080'));
+app.listen(8888, () => console.log('start server on port 8888'));
