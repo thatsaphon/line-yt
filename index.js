@@ -1,56 +1,47 @@
-const express = require('express');
-const app = express();
-require('dotenv').config();
+const express = require('express')
+const app = express()
+require('dotenv').config()
 
-const line = require('@line/bot-sdk');
+const line = require('@line/bot-sdk')
 
-const util = require('util');
-const fs = require('fs');
-const path = require('path');
-const { pipeline } = require('stream');
+const util = require('util')
+const fs = require('fs')
+const path = require('path')
+const { pipeline } = require('stream')
 
 const Tesseract = require('tesseract.js')
 
-app.use(express.static(path.join(__dirname,'download')));
+app.use(express.static(path.join(__dirname, 'download')))
 
 const config = {
-    //channelAccessToken: process.env.token,
-    //channelSecret: process.env.secretcode
-    channelAccessToken: '7U1uGUB/fyBkriDNI+MUulXpr6UDaJoXnRtPDivaf9FnMFfYsUyy7jW0WjAr1bsHjv11gqm+LCQciymwAm7nlMc7Em4STCb/Q8U7hVkr2eYitWAW4VD/3XK8hCG2YWgSmXHPvnRRkJx1mLRw6lpcqWbZkCQsS1A9FX3FSRp/ceE=',
-    channelSecret: '01dd1cdedeab491a09205486f0160769'
+  channelAccessToken: process.env.token,
+  channelSecret: process.env.secretcode,
 }
 
-
-
 app.post('/webhook', line.middleware(config), (req, res) => {
-    Promise
-        .all([
-            req.body.events.map(handleEvents)
-        ])
-        .then((result) => res.json(result))
-});
+  Promise.all([req.body.events.map(handleEvents)]).then((result) =>
+    res.json(result)
+  )
+})
 
-const client = new line.Client(config);
+const client = new line.Client(config)
 
 async function handleEvents(event) {
+  console.log(event.type)
 
-    console.log(event.type);
-
-    if (event.type == 'message') {
-      console.log(event.message.text)
-      if (event.message.text == 'getid2') {
-        return client.replyMessage(event.replyToken, [
-          {
-              "type": "text",
-              "text": `HI YOUUU`,
-          }
-      ]);
-
-      }
+  if (event.type == 'message') {
+    console.log(event.message.text)
+    if (event.message.text == 'getid2') {
+      return client.replyMessage(event.replyToken, [
+        {
+          type: 'text',
+          text: `HI YOUUU`,
+        },
+      ])
     }
+  }
 
-    
-    /*if (event.type === 'postback') {
+  /*if (event.type === 'postback') {
 
         if (event.postback.data == 'M') {
             return client.replyMessage(event.replyToken, [
@@ -158,28 +149,20 @@ async function handleEvents(event) {
         }
     }
     */
-
-    
-
 }
 
 async function downloadcontent(mid, downloadpath) {
-    const stream =  await client.getMessageContent(mid);
+  const stream = await client.getMessageContent(mid)
 
-    const piplineSync = util.promisify(pipeline);
+  const piplineSync = util.promisify(pipeline)
 
-    const folder_download = fs.createWriteStream(downloadpath);
+  const folder_download = fs.createWriteStream(downloadpath)
 
-    await piplineSync(stream, folder_download);
-
-
-
+  await piplineSync(stream, folder_download)
 }
 
 app.get('/', (req, res) => {
-    res.send('ok');
+  res.send('ok')
 })
 
-
-
-app.listen(8888, () => console.log('start server on port 8888'));
+app.listen(8888, () => console.log('start server on port 8888'))
