@@ -17,7 +17,7 @@ const config = {
   channelAccessToken: process.env.token,
   channelSecret: process.env.secretcode,
 }
-
+app.get('/', (req, res) => res.send('Express on Vercel'))
 app.post('/webhook', line.middleware(config), (req, res) => {
   Promise.all([req.body.events.map(handleEvents)]).then((result) =>
     res.json(result)
